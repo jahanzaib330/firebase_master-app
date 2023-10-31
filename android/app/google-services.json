@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888873107827",
+    "project_id": "fir-tts-b8425",
+    "storage_bucket": "fir-tts-b8425.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888873107827:android:839609f44a9994453d4506",
+        "android_client_info": {
+          "package_name": "com.example.firebase_imgae"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnaMBuV5zZ4z-F9lTX4ZYXfO8Bm05S02w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
