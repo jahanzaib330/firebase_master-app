@@ -2,17 +2,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_imgae/update_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'insert_screen.dart';
-
 class FetchScreen extends StatefulWidget {
   const FetchScreen({super.key});
-
   @override
   State<FetchScreen> createState() => _FetchScreenState();
 }
-
 class _FetchScreenState extends State<FetchScreen> {
+
+  Future getUser()async{
+    SharedPreferences userLog = await SharedPreferences.getInstance();
+    return userLog.getString('userID');
+  }
+  String uID = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    getUser().then((value) {
+      setState(() {
+        uID = value;
+      });
+    });
+    super.initState();
+  }
+
+  int currentIndex = 0;
+  List names = ["All", "Male", "Female"];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,8 +40,45 @@ class _FetchScreenState extends State<FetchScreen> {
             children: [
               SizedBox(height: 20,),
 
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(horizontal: 8,vertical: 8),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: ListView.builder(
+                    itemCount: names.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            currentIndex = index;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.bounceIn,
+                          width: 80,
+                          height: 30,
+                          margin: EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                              border: currentIndex==index?Border.all(color: Colors.black):Border.all(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(14)
+                          ),
+                          child: Center(
+                            child: Text(names[index]),
+                          ),
+                        ),
+                      );
+                    },),
+                ),
+              ),
+              SizedBox(height: 10,),
+
               StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("userData").snapshots(),
+                  stream: names[currentIndex]=="All"?FirebaseFirestore.instance.collection("userData").snapshots():names[currentIndex]=="Male"?FirebaseFirestore.instance.collection("userData").where('User-Gender',isEqualTo: "Male").snapshots():FirebaseFirestore.instance.collection("userData").where('User-Gender',isEqualTo: "Female").snapshots(),
                   builder: (context, snapshot) {
                     if(snapshot.connectionState == ConnectionState.waiting){
                       return CircularProgressIndicator();

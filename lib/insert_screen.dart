@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class InsertScreen extends StatefulWidget {
@@ -17,31 +18,41 @@ class _InsertScreenState extends State<InsertScreen> {
   TextEditingController userName = TextEditingController();
   TextEditingController userEmail = TextEditingController();
   TextEditingController userAge = TextEditingController();
+  TextEditingController userGender = TextEditingController();
   TextEditingController userPassword = TextEditingController();
 
   File? userProfile;
-
+  bool screenLoader = false;
 
   void userInertwithImage()async{
+    setState(() {
+      screenLoader = !screenLoader;
+    });
+    String userID = Uuid().v1();
     UploadTask uploadTask = FirebaseStorage.instance.ref().child("User-Images").child(Uuid().v1()).putFile(userProfile!);
     TaskSnapshot taskSnapshot = await uploadTask;
     String userImage = await taskSnapshot.ref.getDownloadURL();
-    userInsert(imgUrl: userImage);
+    SharedPreferences userLog = await SharedPreferences.getInstance();
+    userLog.setString('userID', userID);
+    userInsert(imgUrl: userImage,uID: userID);
+    setState(() {
+      screenLoader = !screenLoader;
+    });
     Navigator.pop(context);
   }
 
-  void userInsert({String? imgUrl})async{
-    String userID = Uuid().v1();
+  void userInsert({String? imgUrl, String? uID})async{
     Map<String, dynamic> useradd = {
-      "User-ID": userID,
+      "User-ID": uID,
       "User-Name": userName.text.toString(),
       "User-Email": userEmail.text.toString(),
       "User-Image": imgUrl,
       "User-Age": userAge.text.toString(),
+      "User-Gender": userGender.text.toString(),
       "User-Password": userPassword.text.toString(),
     };
 
-    FirebaseFirestore.instance.collection("userData").doc(userID).set(useradd);
+    FirebaseFirestore.instance.collection("userData").doc(uID).set(useradd);
 
   }
 
@@ -115,6 +126,15 @@ class _InsertScreenState extends State<InsertScreen> {
                   height: 10,
                 ),
                 TextFormField(
+                  controller: userGender,
+                  decoration: InputDecoration(
+                      labelText: "Enter Your Gender",
+                      suffixIcon: Icon(Icons.male)),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
                   controller: userPassword,
                   decoration: InputDecoration(
                       labelText: "Enter Your Password",
@@ -123,11 +143,15 @@ class _InsertScreenState extends State<InsertScreen> {
                 SizedBox(
                   height: 10,
                 ),
-                ElevatedButton(
+                screenLoader==false?ElevatedButton(
                     onPressed: () {
                       userInertwithImage();
                     },
-                    child: Text("Insert"))
+                    child: Text("Insert")):SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Center(child: CircularProgressIndicator(),),
+                )
               ],
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_imgae/fetch_screen.dart';
 import 'package:firebase_imgae/firebase_options.dart';
+import 'package:firebase_imgae/horizontal_scroll_screen.dart';
+import 'package:firebase_imgae/insert_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async{
