@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_imgae/main.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,7 +52,15 @@ class _InsertScreenState extends State<InsertScreen> {
       "User-Gender": userGender.text.toString(),
       "User-Password": userPassword.text.toString(),
     };
-
+    SharedPreferences userCheck = await SharedPreferences.getInstance();
+    if (userEmail.text.toString()=="admin@gmail.com") {
+      userCheck.setString('userCheck', "admin");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SplashScreen(),));
+    }
+    else{
+      userCheck.setString('userCheck', "user");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SplashScreen(),));
+    }
     FirebaseFirestore.instance.collection("userData").doc(uID).set(useradd);
 
   }
