@@ -5,6 +5,7 @@ import 'package:firebase_imgae/admin_screen.dart';
 import 'package:firebase_imgae/fetch_screen.dart';
 import 'package:firebase_imgae/firebase_options.dart';
 import 'package:firebase_imgae/insert_screen.dart';
+import 'package:firebase_imgae/search_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: SearchScreen(),
     );
   }
 }
